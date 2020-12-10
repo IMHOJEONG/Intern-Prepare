@@ -22,123 +22,123 @@ replace github.kakaocorp.com/cloud/kube-common => ../../kube-common
 
 require k8s.io/kubernetes v0.0.0
 
-replace k8s.io/kubernetes => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/kubernetes
+replace k8s.io/kubernetes => ../../kube-mysql/kubernetes-1.15.8/kubernetes
 
 require k8s.io/api v0.0.0
 
-replace k8s.io/api => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/api
+replace k8s.io/api => ../../kube-mysql/kubernetes-1.15.8/api
 
 require k8s.io/apiextensions-apiserver v0.0.0
 
-replace k8s.io/apiextensions-apiserver => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/apiextensions-apiserver
+replace k8s.io/apiextensions-apiserver => ../../kube-mysql/kubernetes-1.15.8/apiextensions-apiserver
 
 require k8s.io/apimachinery v0.0.0
 
-replace k8s.io/apimachinery => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/apimachinery
+replace k8s.io/apimachinery => ../../kube-mysql/kubernetes-1.15.8/apimachinery
 
 require k8s.io/apiserver v0.0.0
 
-replace k8s.io/apiserver => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/apiserver
+replace k8s.io/apiserver => ../../kube-mysql/kubernetes-1.15.8/apiserver
 
 require k8s.io/cli-runtime v0.0.0
 
-replace k8s.io/cli-runtime => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/cli-runtime
+replace k8s.io/cli-runtime => ../../kube-mysql/kubernetes-1.15.8/cli-runtime
 
 require k8s.io/client-go v0.0.0
 
-replace k8s.io/client-go => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/client-go
+replace k8s.io/client-go => ../../kube-mysql/kubernetes-1.15.8/client-go
 
 require k8s.io/cloud-provider v0.0.0
 
-replace k8s.io/cloud-provider => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/cloud-provider
+replace k8s.io/cloud-provider => ../../kube-mysql/kubernetes-1.15.8/cloud-provider
 
 require k8s.io/cluster-bootstrap v0.0.0
 
-replace k8s.io/cluster-bootstrap => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/cluster-bootstrap
+replace k8s.io/cluster-bootstrap => ../../kube-mysql/kubernetes-1.15.8/cluster-bootstrap
 
 require k8s.io/code-generator v0.0.0
 
-replace k8s.io/code-generator => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/code-generator
+replace k8s.io/code-generator => ../../kube-mysql/kubernetes-1.15.8/code-generator
 
 require k8s.io/component-base v0.0.0
 
-replace k8s.io/component-base => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/component-base
+replace k8s.io/component-base => ../../kube-mysql/kubernetes-1.15.8/component-base
 
 require k8s.io/cri-api v0.0.0
 
-replace k8s.io/cri-api => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/cri-api
+replace k8s.io/cri-api => ../../kube-mysql/kubernetes-1.15.8/cri-api
 
 require k8s.io/csi-translation-lib v0.0.0
 
-replace k8s.io/csi-translation-lib => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/csi-translation-lib
+replace k8s.io/csi-translation-lib => ../../kube-mysql/kubernetes-1.15.8/csi-translation-lib
 
 require k8s.io/gengo v0.0.0
 
-replace k8s.io/gengo => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/gengo
+replace k8s.io/gengo => ../../kube-mysql/kubernetes-1.15.8/gengo
 
 require k8s.io/heapster v1.2.0-beta.1
 
-replace k8s.io/heapster => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/heapster
+replace k8s.io/heapster => ../../kube-mysql/kubernetes-1.15.8/heapster
 
 require k8s.io/klog v0.3.1
 
-replace k8s.io/klog => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/klog
+replace k8s.io/klog => ../../kube-mysql/kubernetes-1.15.8/klog
 
 require k8s.io/kube-aggregator v0.0.0
 
-replace k8s.io/kube-aggregator => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/kube-aggregator
+replace k8s.io/kube-aggregator => ../../kube-mysql/kubernetes-1.15.8/kube-aggregator
 
 require k8s.io/kube-controller-manager v0.0.0
 
-replace k8s.io/kube-controller-manager => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/kube-controller-manager
+replace k8s.io/kube-controller-manager => ../../kube-mysql/kubernetes-1.15.8/kube-controller-manager
 
 require k8s.io/kube-openapi v0.0.0
 
-replace k8s.io/kube-openapi => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/kube-openapi
+replace k8s.io/kube-openapi => ../../kube-mysql/kubernetes-1.15.8/kube-openapi
 
 require k8s.io/kube-proxy v0.0.0
 
-replace k8s.io/kube-proxy => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/kube-proxy
+replace k8s.io/kube-proxy => ../../kube-mysql/kubernetes-1.15.8/kube-proxy
 
 require k8s.io/kube-scheduler v0.0.0
 
-replace k8s.io/kube-scheduler => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/kube-scheduler
+replace k8s.io/kube-scheduler => ../../kube-mysql/kubernetes-1.15.8/kube-scheduler
 
 require k8s.io/kubectl v0.0.0
 
-replace k8s.io/kubectl => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/kubectl
+replace k8s.io/kubectl => ../../kube-mysql/kubernetes-1.15.8/kubectl
 
 require k8s.io/kubelet v0.0.0
 
-replace k8s.io/kubelet => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/kubelet
+replace k8s.io/kubelet => ../../kube-mysql/kubernetes-1.15.8/kubelet
 
 require k8s.io/legacy-cloud-providers v0.0.0
 
-replace k8s.io/legacy-cloud-providers => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/legacy-cloud-providers
+replace k8s.io/legacy-cloud-providers => ../../kube-mysql/kubernetes-1.15.8/legacy-cloud-providers
 
 require k8s.io/metrics v0.0.0
 
-replace k8s.io/metrics => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/metrics
+replace k8s.io/metrics => ../../kube-mysql/kubernetes-1.15.8/metrics
 
 require k8s.io/node-api v0.0.0
 
-replace k8s.io/node-api => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/node-api
+replace k8s.io/node-api => ../../kube-mysql/kubernetes-1.15.8/node-api
 
 require k8s.io/repo-infra v0.0.0
 
-replace k8s.io/repo-infra => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/repo-infra
+replace k8s.io/repo-infra => ../../kube-mysql/kubernetes-1.15.8/repo-infra
 
 require k8s.io/sample-apiserver v0.0.0
 
-replace k8s.io/sample-apiserver => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/sample-apiserver
+replace k8s.io/sample-apiserver => ../../kube-mysql/kubernetes-1.15.8/sample-apiserver
 
 require k8s.io/sample-cli-plugin v0.0.0
 
-replace k8s.io/sample-cli-plugin => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/sample-cli-plugin
+replace k8s.io/sample-cli-plugin => ../../kube-mysql/kubernetes-1.15.8/sample-cli-plugin
 
 require k8s.io/sample-controller v0.0.0
 
-replace k8s.io/sample-controller => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/sample-controller
+replace k8s.io/sample-controller => ../../kube-mysql/kubernetes-1.15.8/sample-controller
 
 require (
 	github.com/gin-contrib/cors v1.3.1 // indirect
@@ -152,4 +152,4 @@ require (
 	k8s.io/utils v0.0.0
 )
 
-replace k8s.io/utils => /Users/kakao_ent/kubernetes-mysql/kube-mysql/kubernetes-1.15.8/utils
+replace k8s.io/utils => ../../kube-mysql/kubernetes-1.15.8/utils

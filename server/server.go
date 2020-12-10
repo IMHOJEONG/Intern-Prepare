@@ -163,7 +163,6 @@ func haconfigcall(mysqlClientset *mysqlclient.Clientset) Haconfigs{
 		haconfigsResult.Haconfigs = append(haconfigsResult.Haconfigs, haconfigResult)
 	}
 
-
 	return haconfigsResult
 }
 
@@ -255,8 +254,6 @@ func totaldatacall(mysqlClientset *mysqlclient.Clientset, kubeClientset *kuberne
 	}
 
 	//fmt.Println(totalBackup, runningBackup, abnormalBackup)
-
-
 	//totalData.totalBackup = totalBackup
 	totalData.RunningBackup = runningBackup
 	totalData.AbnormalBackup = abnormalBackup
@@ -284,7 +281,12 @@ func main() {
 	// create the clientset
 	kubeClientset, err := kubernetes.NewForConfig(config)
 
+    if err != nil {
+        panic(err.Error())
+    }
+
 	mysqlClientset := mysqlclient.NewForConfigOrDie(config)
+
 
 	//totaldataInstanceset, _ := mysqlClientset.MySQLV1().InstanceSets(metav1.NamespaceAll).Watch(metav1.ListOptions{})
 	//
@@ -362,6 +364,10 @@ func main() {
 
 	r.GET("/backup", func(c *gin.Context) {
 		c.JSON(200, backupcall(mysqlClientset))
+	})
+
+	r.GET("/namespace", func(c *gin.Context){
+		c.JSON(200, metav1.NamespaceAll)
 	})
 
 	r.Run("127.0.0.1:8080")
