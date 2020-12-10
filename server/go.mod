@@ -16,9 +16,9 @@ require github.com/swaggo/swag v1.6.7
 
 require github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 
-replace github.kakaocorp.com/cloud/kube-mysql => ../kube-mysql
+replace github.kakaocorp.com/cloud/kube-mysql => ../../kube-mysql
 
-replace github.kakaocorp.com/cloud/kube-common => ../kube-common
+replace github.kakaocorp.com/cloud/kube-common => ../../kube-common
 
 require k8s.io/kubernetes v0.0.0
 
