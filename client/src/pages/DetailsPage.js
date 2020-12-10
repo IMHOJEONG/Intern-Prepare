@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import {Container, FormControl, Typography} from "@material-ui/core";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InstancesetDetailsTable from "./InstancesetDetailsTable";
+import axios from 'axios';
+
 
 const useStyles = makeStyles((theme)=>({
     container: {
@@ -28,11 +30,26 @@ const useStyles = makeStyles((theme)=>({
 }))
 
 
-function InstancesetPage() {
+function DetailsPage() {
 
     const classes = useStyles();
 
-    const [age, setAge] =useState('');
+    const [namespace, setNamespace] =useState([]);
+
+    useEffect(()=>{
+        const callNamespace = async () => {
+            try {
+                const callNamespace = await axios.get("http://localhost:8080/namespace")
+                console.log(callNamespace)
+                // setNamespace([...callNamespace])
+            }
+            catch (e){
+                console.log(e)
+            }
+        }
+
+    }, [])
+
 
     const handleChange = (event) =>{
       setAge(event.target.value)
@@ -63,9 +80,7 @@ function InstancesetPage() {
                </FormControl>
            </Container>
             <Container className={classes.container} maxWidth={false}>
-                {/*<Typography>*/}
-                {/*    Details*/}
-                {/*</Typography>*/}
+
                 <InstancesetDetailsTable />
             </Container>
 
@@ -73,4 +88,4 @@ function InstancesetPage() {
     )
 }
 
-export default InstancesetPage;
+export default DetailsPage;

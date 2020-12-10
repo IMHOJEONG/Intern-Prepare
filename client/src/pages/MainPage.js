@@ -8,7 +8,7 @@ import {Grid} from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Divider from "@material-ui/core/Divider";
 import CustomResourceInfo from "./CustomResourceInfo";
-import InstancesetPage from "./InstancesetPage";
+import DetailsPage from "./DetailsPage";
 
 const ContainerFragment = styled.div`
     display: flex;
@@ -36,7 +36,7 @@ function MainPage() {
             case "":
                 return <CustomResourceInfo />
             case "커스텀 리소스,Instanceset":
-                return <CustomResourceInfo />
+                return <DetailsPage />
             case "커스텀 리소스,Instances":
                 return <CustomResourceInfo />
             case "커스텀 리소스,haconfigs":
