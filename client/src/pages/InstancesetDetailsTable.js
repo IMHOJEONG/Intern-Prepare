@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -24,32 +24,85 @@ import Collapse from "@material-ui/core/Collapse";
 import Box from "@material-ui/core/Box";
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import axios from 'axios'
+
+// async function createDataAsync(){
+//
+//     try{
+//         const data = await axios.get("http://localhost:8080/instanceset")
+//         console.log(data)
+//     }
+//     catch (e){
+//         console.log(e)
+//     }
+//
+//
+// }
+//
+// createDataAsync()
 
 
-function createData(name, generation, creation_Time, backup_Container, replicas, backup_Name, access_Modes) {
-    return { name, generation, creation_Time, backup_Container, replicas, backup_Name, access_Modes,
-        history:[
-            { date: '2020-01-05', customerId: '11091700', amount: 3 },
-            { date: '2020-01-02', customerId: 'Anonymous', amount: 1 },
+// function createDetailsData(BackupName, Image, Innodb_buffer_pool_size, key_buffer_size, max_heap_table_size,
+//                            Storage, expire_logs_days, max_connections, default_time_zone, log_bin_trust_function_creators,
+//                            tmp_table_size, long_query_time){
+//     return {
+//         BackupName, Image, Innodb_buffer_pool_size, key_buffer_size, max_heap_table_size,
+//         Storage, expire_logs_days, max_connections, default_time_zone, log_bin_trust_function_creators
+//         tmp_table_size, long_query_time,
+//     }
+// }
+
+
+function createData(resource) {
+    const { name, namespace, creationTimestamp, generation } = resource.metadata
+    const { backupContainer, replicas } = resource.spec
+    const { backupName, image } = resource.spec.template.spec
+    const { accessModes } = resource.spec.template.spec.volumeClaim.spec
+    const { storage } = resource.spec.template.spec.volumeClaim.spec.resources.requests
+    let templateObject = { image, storage, backupName }
+    let template_lastObject = {}
+    resource.spec.template.spec.options.forEach((e)=>{
+        switch (e["name"]){
+            case "backupName":
+            case "innodb_buffer_pool_size":
+            case "key_buffer_size":
+            case "max_heap_table_size":
+                templateObject[e["name"]] = e["value"]
+                return;
+            case "expire_logs_days":
+            case "max_connections":
+            case "default-time-zone":
+            case "tmp_table_size":
+                template_lastObject[e["name"]] = e["value"]
+                return;
+        }
+    })
+    const { } = resource.status
+
+    console.log(templateObject, template_lastObject)
+
+    return { name, namespace, creationTimestamp, backupContainer, replicas , accessModes,
+        resource,
+        template:[
+             templateObject ,
+            // 3{
+            //     BackupName, Image, Innodb_buffer_pool_size, key_buffer_size, max_heap_table_size,
+            //     Storage, expire_logs_days, max_connections, default_time_zone, log_bin_trust_function_creators
+            //     tmp_table_size, long_query_time,
+            // }
+        ],
+        template_last: [
+            template_lastObject
         ]
     };
 }
 
-const rows = [
-    createData('Cupcake', 305, 3.7, 67, 2, 2, 2),
-    createData('Donut', 452, 25.0, 51,  2, 2, 2),
-    createData('Eclair', 262, 16.0, 24,  2, 2, 2),
-    createData('Frozen yoghurt', 159, 6.0, 24,  2, 2, 2),
-    createData('Gingerbread', 356, 16.0, 49,  2, 2, 2),
-    createData('Honeycomb', 408, 3.2, 87,  2, 2, 2),
-    createData('Ice cream sandwich', 237, 9.0, 37,  2, 2, 2),
-    createData('Jelly Bean', 375, 0.0, 94,  2, 2, 2),
-    createData('KitKat', 518, 26.0, 65,  2, 2, 2),
-    createData('Lollipop', 392, 0.2, 98,  2, 2, 2),
-    createData('Marshmallow', 318, 0, 81,  2, 2, 2),
-    createData('Nougat', 360, 19.0, 9,  2, 2, 2),
-    createData('Oreo', 437, 18.0, 63,  2, 2, 2),
-];
+
+
+// const rows = [
+//     createData('Cupcake', 305, 3.7, 67, 2, 2, 2,'poster-im'),
+//     createData('Donut', 452, 25.0, 51,  2, 2, 2, ''),
+// ];
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -77,14 +130,16 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
+
+
 const headCells = [
+    { id: 'choice', numeric: false, disablePadding: false, label: 'choice' },
     { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-    { id: 'generation', numeric: false, disablePadding: true, label: 'Generation' },
     { id: 'Creation_Time', numeric: false, disablePadding: true, label: 'Creation Time' },
     { id: 'Backup_Container', numeric: true, disablePadding: false, label: 'Backup Container' },
     { id: 'Replicas', numeric: true, disablePadding: false, label: 'Replicas  (개수)' },
-    { id: 'Backup_name', numeric: true, disablePadding: false, label: 'Backup Name' },
     { id: 'Access_Modes', numeric: true, disablePadding: false, label: 'Access Modes' },
+    // { id: 'Namespace', numeric: false, disablePadding: true, label: 'Namespace' }
     // { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
 ];
 
@@ -238,7 +293,9 @@ const useRowStyles = makeStyles({
 
 function Row(props) {
 
-    const { row, isItemSelected, labelId, selected, setSelected } = props;
+    const { row, isItemSelected, labelId, selected, setSelected,
+        namespace
+    } = props;
     const [open, setOpen] = React.useState(false);
 
     const handleClick = (event, name) => {
@@ -265,90 +322,119 @@ function Row(props) {
         return setOpen(!open)
     };
 
-    return  <>
-        <TableRow
-            hover
-            onClick={(event) => handleClick(event, row.name)}
-            role="checkbox"
-            aria-checked={isItemSelected}
-            tabIndex={-1}
-            key={row.name}
-            selected={isItemSelected}
-        >
-
-            <TableCell padding="checkbox">
-                <Checkbox
-                    checked={isItemSelected}
-                    inputProps={{ 'aria-labelledby': labelId }}
-                />
-            </TableCell>
-            <TableCell>
-                <IconButton aria-label="expand row" size="small" onClick={preventHandleClick}>
-                    {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                </IconButton>
-            </TableCell>
-            <TableCell component="th" id={labelId} scope="row" padding="none">
-                {row.name}
-            </TableCell>
-            <TableCell align="right">{row.generation}</TableCell>
-            <TableCell align="right">{row.creation_Time}</TableCell>
-            <TableCell align="right">{row.backup_Container}</TableCell>
-            <TableCell align="right">{row.replicas}</TableCell>
-            <TableCell align="right">{row.backup_Name}</TableCell>
-            <TableCell align="right">{row.access_Modes}</TableCell>
-
-        </TableRow>
+    // console.log(namespace, row.namespace)
 
 
-        <TableRow>
-            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                    <Box margin={1}>
-                        <Typography variant="h6" gutterBottom component="div">
-                            History
-                        </Typography>
-                        <Table size="small" aria-label="purchases">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Date</TableCell>
-                                    <TableCell>Customer</TableCell>
-                                    <TableCell align="right">Amount</TableCell>
-                                    <TableCell align="right">Total price ($)</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {row.history.map((historyRow) => (
-                                    <TableRow key={historyRow.date}>
-                                        <TableCell component="th" scope="row">
-                                            {historyRow.date}
-                                        </TableCell>
-                                        <TableCell>{historyRow.customerId}</TableCell>
-                                        <TableCell align="right">{historyRow.amount}</TableCell>
-                                        <TableCell align="right">
-                                            {Math.round(historyRow.amount * row.price * 100) / 100}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </Box>
-                </Collapse>
-            </TableCell>
-        </TableRow>
-    </>
+
+
+    return <>
+                <TableRow
+                    hover
+                    onClick={(event) => handleClick(event, row.name)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.name}
+                    selected={isItemSelected}
+                >
+                    <TableCell padding="checkbox">
+                        <Checkbox
+                            checked={isItemSelected}
+                            inputProps={{ 'aria-labelledby': labelId }}
+                        />
+                    </TableCell>
+                    <TableCell>
+                        <IconButton aria-label="expand row" size="small" onClick={preventHandleClick}>
+                            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                        </IconButton>
+                    </TableCell>
+                    <TableCell component="th" id={labelId} scope="row" padding="none">
+                        {row.name}
+                    </TableCell>
+                    <TableCell align="right">{row.creationTimestamp}</TableCell>
+                    <TableCell align="right">{row.backupContainer}</TableCell>
+                    <TableCell align="right">{row.replicas}</TableCell>
+                    <TableCell align="right">{row.accessModes}</TableCell>
+                </TableRow>
+                <TableRow>
+                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                        <Collapse in={open} timeout="auto" unmountOnExit>
+                            <Box margin={1}>
+                                <Typography variant="h6" gutterBottom component="div">
+                                    Template
+                                </Typography>
+                                <Table size="small" aria-label="purchases">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Backup Name</TableCell>
+                                            <TableCell>Image</TableCell>
+                                            <TableCell>Innodb_buffer_pool_size</TableCell>
+                                            <TableCell>Key_buffer_size</TableCell>
+                                            <TableCell>max_heap_table_size</TableCell>
+                                            <TableCell>Storage</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+
+                                        {row.template.map((historyRow, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell component="th" scope="row">
+                                                    {historyRow.backupName}
+                                                </TableCell>
+                                                <TableCell>{historyRow.image}</TableCell>
+                                                <TableCell>{historyRow.innodb_buffer_pool_size}</TableCell>
+                                                <TableCell>{historyRow.key_buffer_size}</TableCell>
+                                                <TableCell>{historyRow.max_heap_table_size}</TableCell>
+                                                <TableCell>{historyRow.storage}</TableCell>
+
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                                <Table size="small" aria-label="purchases">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Expire_logs_days</TableCell>
+                                            <TableCell>Max_connections</TableCell>
+                                            <TableCell>Default_time_zone</TableCell>
+                                            <TableCell>Tmp_table_size</TableCell>
+                                            <TableCell>Long_query_time</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {row.template_last.map((historyRow, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell component="th" scope="row">
+                                                    {historyRow.expire_logs_days}
+                                                </TableCell>
+                                                <TableCell>{historyRow.max_connections}</TableCell>
+                                                <TableCell>{historyRow["default-time-zone"]}</TableCell>
+                                                <TableCell>{historyRow["tmp_table_size"]}</TableCell>
+                                                <TableCell>{historyRow.long_query_time}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </Box>
+                        </Collapse>
+                    </TableCell>
+                </TableRow>
+
+                    </>
+
+
 }
 
+export default function InstancesetDetailsTable(props) {
 
-
-
-
-export default function InstancesetDetailsTable() {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
     const [selected, setSelected] = React.useState([]);
+    const { namespace } = props;
     const [page, setPage] = React.useState(0);
     // const [dense, setDense] = React.useState(false);
+    const [rows, setRows] = React.useState([]);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
     const handleRequestSort = (event, property) => {
@@ -384,6 +470,26 @@ export default function InstancesetDetailsTable() {
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
+    React.useEffect(()=>{
+        const callInstancesets = async () => {
+            try{
+                const response = await axios.get(`http://localhost:8080/instanceset/${namespace}`)
+                if(response.data){
+                    setRows(response.data.map((e)=> {
+                        return createData(e)
+                    }))
+                    console.log(rows)
+                }
+            }
+            catch (e){
+                console.log(e)
+            }
+        }
+
+        callInstancesets()
+    }, [namespace])
+
+
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
@@ -410,11 +516,12 @@ export default function InstancesetDetailsTable() {
                                 .map((row, index) => {
                                     const isItemSelected = isSelected(row.name);
                                     const labelId = `enhanced-table-checkbox-${index}`;
-
-                                    return (
+                                    console.log(row.namespace, namespace)
+                                    return ( row.namespace === namespace ?
                                         <Row row={row} isItemSelected={isItemSelected} labelId={labelId}
+                                             namespace={namespace}
                                             selected={selected} setSelected={setSelected}
-                                        />
+                                        /> : <></>
                                     );
                                 })}
                             {emptyRows > 0 && (

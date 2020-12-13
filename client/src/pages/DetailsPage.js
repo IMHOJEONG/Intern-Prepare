@@ -34,26 +34,31 @@ function DetailsPage() {
 
     const classes = useStyles();
 
-    const [namespace, setNamespace] =useState([]);
+    const [namespaces, setNamespaces] = useState([]);
+    const [namespace, setNamespace] = useState('default');
+
 
     useEffect(()=>{
         const callNamespace = async () => {
             try {
-                const callNamespace = await axios.get("http://localhost:8080/namespace")
-                console.log(callNamespace)
-                // setNamespace([...callNamespace])
+                const response = await axios.get("http://localhost:8080/namespace")
+                // setNamespaces()
+                // console.log(callNamespace)
+                setNamespaces(response.data)
             }
             catch (e){
                 console.log(e)
             }
         }
 
+        callNamespace()
     }, [])
 
-
     const handleChange = (event) =>{
-      setAge(event.target.value)
+      setNamespace(event.target.value)
     };
+
+
 
     return (
         <>
@@ -65,7 +70,7 @@ function DetailsPage() {
                        Namespace:
                    </Typography>
                    <Select
-                    value={age}
+                    value={namespace}
                     onChange={handleChange}
                     displayEmpty
                     className={classes.selectEmpty}
@@ -73,15 +78,16 @@ function DetailsPage() {
                         'aria-label': 'Without label'
                     }}
                    >
-                       <MenuItem value={10}>poster-im</MenuItem>
-                       <MenuItem value={20}>poster-im2</MenuItem>
-                       <MenuItem value={30}>poster-im3</MenuItem>
+                       {
+                           namespaces.map((e)=>{
+                               return <MenuItem value={e}>{e}</MenuItem>
+                           })
+                       }
                    </Select>
                </FormControl>
            </Container>
             <Container className={classes.container} maxWidth={false}>
-
-                <InstancesetDetailsTable />
+                <InstancesetDetailsTable namespace={namespace}/>
             </Container>
 
         </>

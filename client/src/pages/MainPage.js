@@ -29,7 +29,7 @@ function MainPage() {
     const [navopen, isNavOpen] = React.useState(true);
     const [change, onchange] = React.useState();
 
-    console.log(breadcrumb)
+    // console.log(breadcrumb)
 
     function switchComponent(breadcrumb) {
         switch (breadcrumb) {
