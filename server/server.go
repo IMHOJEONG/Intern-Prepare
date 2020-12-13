@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	mysqlclient "github.kakaocorp.com/cloud/kube-mysql/pkg/generated/clientset/versioned"
+	mysqlv1 "github.kakaocorp.com/cloud/kube-mysql/pkg/mysql/v1"
 	"k8s.io/client-go/kubernetes"
 	"math"
 	"strconv"
@@ -80,6 +81,12 @@ type Backup struct {
 	Age string
 }
 
+
+func getNamespace() {
+
+}
+
+
 func instanceCall(mysqlClientset *mysqlclient.Clientset) Instances{
 
 	instancesLists, _ := mysqlClientset.MySQLV1().Instances(metav1.NamespaceAll).List(metav1.ListOptions{})
@@ -113,38 +120,42 @@ func instanceCall(mysqlClientset *mysqlclient.Clientset) Instances{
 
 
 
-func instancesetCall(mysqlClientset *mysqlclient.Clientset) InstanceSets{
+func instancesetCall(mysqlClientset *mysqlclient.Clientset) []mysqlv1.InstanceSet {
 
 	instancesetLists, _ := mysqlClientset.MySQLV1().InstanceSets(metav1.NamespaceAll).List(metav1.ListOptions{})
 
-	instanceSetsResult := InstanceSets{}
+	return instancesetLists.Items
 
-	for _, instancesetObj := range instancesetLists.Items {
-		instancesetResult := InstanceSet{}
-		instancesetResult.Namespace = instancesetObj.Namespace
-		instancesetResult.Name = instancesetObj.Name
-		instancesetResult.Replicas = instancesetObj.Spec.Replicas
-		if instancesetObj.Spec.Template.Spec.BackupName == nil {
-			instancesetResult.Recent_Backup = "No Value"
-		} else {
-			instancesetResult.Recent_Backup = *(instancesetObj.Spec.Template.Spec.BackupName)
-		}
 
-		createTime := instancesetObj.CreationTimestamp
 
-		getDay := math.Floor(time.Now().Sub(createTime.Time).Hours() / 24.0)
+	//instanceSetsResult := InstanceSets{}
+	//
+	//for _, instancesetObj := range instancesetLists.Items {
+	//	instancesetResult := InstanceSet{}
+	//	instancesetResult.Namespace = instancesetObj.Namespace
+	//	instancesetResult.Name = instancesetObj.Name
+	//	instancesetResult.Replicas = instancesetObj.Spec.Replicas
+	//	if instancesetObj.Spec.Template.Spec.BackupName == nil {
+	//		instancesetResult.Recent_Backup = "No Value"
+	//	} else {
+	//		instancesetResult.Recent_Backup = *(instancesetObj.Spec.Template.Spec.BackupName)
+	//	}
+	//
+	//	createTime := instancesetObj.CreationTimestamp
+	//
+	//	getDay := math.Floor(time.Now().Sub(createTime.Time).Hours() / 24.0)
+	//
+	//	if getDay == 0 {
+	//		instancesetResult.Age = time.Now().Sub(createTime.Time).Round(time.Second).String()
+	//		//fmt.Println(instancesetResult.Age)
+	//	} else {
+	//		instancesetResult.Age = fmt.Sprintf("%.0f", getDay) + "d"
+	//		//fmt.Println(instancesetResult.Age)
+	//	}
+	//	instanceSetsResult.InstanceSets = append(instanceSetsResult.InstanceSets, instancesetResult)
+	//}
 
-		if getDay == 0 {
-			instancesetResult.Age = time.Now().Sub(createTime.Time).Round(time.Second).String()
-			//fmt.Println(instancesetResult.Age)
-		} else {
-			instancesetResult.Age = fmt.Sprintf("%.0f", getDay) + "d"
-			//fmt.Println(instancesetResult.Age)
-		}
-		instanceSetsResult.InstanceSets = append(instanceSetsResult.InstanceSets, instancesetResult)
-	}
-
-	return instanceSetsResult
+	//return instanceSetsResult
 }
 
 func haconfigcall(mysqlClientset *mysqlclient.Clientset) Haconfigs{
@@ -347,8 +358,9 @@ func main() {
 		//kubeClientset.CoreV1().PersistentVolumes().List(metav1.ListOptions{})
 	})
 
-	r.GET("/instanceset", func(c *gin.Context) {
+	r.GET("/instanceset/:namespace", func(c *gin.Context) {
 
+		fmt.Println(c.Params.ByName("namespace"))
 		//mysqlClientset.MySQLV1().RESTClient().
 		c.JSON(200, instancesetCall(mysqlClientset))
 
@@ -367,7 +379,16 @@ func main() {
 	})
 
 	r.GET("/namespace", func(c *gin.Context){
-		c.JSON(200, metav1.NamespaceAll)
+
+		test, _ := kubeClientset.CoreV1().Namespaces().List(metav1.ListOptions{})
+
+		var namespaces []string
+
+		for _, namespace := range test.Items {
+			namespaces = append(namespaces, namespace.Name)
+		}
+
+		c.JSON(200, namespaces)
 	})
 
 	r.Run("127.0.0.1:8080")
