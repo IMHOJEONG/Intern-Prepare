@@ -1,6 +1,5 @@
 import React from "react";
 import Drawer from "@material-ui/core/Drawer";
-// import styled from 'styled-components';
 import {Toolbar} from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import List from "@material-ui/core/List";
@@ -110,7 +109,6 @@ function navigation(prop) {
     const { setBreadcrumb, navopen } = prop;
 
     const changeHeader = (item, text) => {
-        console.log(item, text)
         setBreadcrumb(`${item},${text}`);
     };
 

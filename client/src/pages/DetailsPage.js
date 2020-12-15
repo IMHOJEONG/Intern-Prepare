@@ -5,6 +5,9 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InstancesetDetailsTable from "./InstancesetDetailsTable";
 import axios from 'axios';
+import InstanceTable from "./InstanceTable";
+import HaconfigTable from "./HaconfigTable";
+import BackupTable from "./BackupTable";
 
 
 const useStyles = makeStyles((theme)=>({
@@ -30,12 +33,27 @@ const useStyles = makeStyles((theme)=>({
 }))
 
 
-function DetailsPage() {
+function DetailsPage(props) {
 
     const classes = useStyles();
 
+    const { resource } = props;
+
     const [namespaces, setNamespaces] = useState([]);
-    const [namespace, setNamespace] = useState('default');
+    const [namespace, setNamespace] = useState("");
+
+    function switchResource(resource){
+        switch(resource){
+            case "instanceset":
+                return <InstancesetDetailsTable namespace={namespace}/>
+            case 'instance':
+                return <InstanceTable namespace={namespace} />
+            case 'haconfig':
+                return <HaconfigTable namespace={namespace} />
+            case 'backup':
+                return <BackupTable namespace={namespace} />
+        }
+    }
 
 
     useEffect(()=>{
@@ -57,8 +75,6 @@ function DetailsPage() {
     const handleChange = (event) =>{
       setNamespace(event.target.value)
     };
-
-
 
     return (
         <>
@@ -87,7 +103,7 @@ function DetailsPage() {
                </FormControl>
            </Container>
             <Container className={classes.container} maxWidth={false}>
-                <InstancesetDetailsTable namespace={namespace}/>
+                {switchResource(resource)}
             </Container>
 
         </>

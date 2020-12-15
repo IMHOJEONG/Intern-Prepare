@@ -16,8 +16,6 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import Collapse from "@material-ui/core/Collapse";
@@ -25,33 +23,6 @@ import Box from "@material-ui/core/Box";
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import axios from 'axios'
-
-// async function createDataAsync(){
-//
-//     try{
-//         const data = await axios.get("http://localhost:8080/instanceset")
-//         console.log(data)
-//     }
-//     catch (e){
-//         console.log(e)
-//     }
-//
-//
-// }
-//
-// createDataAsync()
-
-
-// function createDetailsData(BackupName, Image, Innodb_buffer_pool_size, key_buffer_size, max_heap_table_size,
-//                            Storage, expire_logs_days, max_connections, default_time_zone, log_bin_trust_function_creators,
-//                            tmp_table_size, long_query_time){
-//     return {
-//         BackupName, Image, Innodb_buffer_pool_size, key_buffer_size, max_heap_table_size,
-//         Storage, expire_logs_days, max_connections, default_time_zone, log_bin_trust_function_creators
-//         tmp_table_size, long_query_time,
-//     }
-// }
-
 
 function createData(resource) {
     const { name, namespace, creationTimestamp, generation } = resource.metadata
@@ -78,9 +49,6 @@ function createData(resource) {
         }
     })
     const { } = resource.status
-
-    console.log(templateObject, template_lastObject)
-
     return { name, namespace, creationTimestamp, backupContainer, replicas , accessModes,
         resource,
         template:[
@@ -96,13 +64,6 @@ function createData(resource) {
         ]
     };
 }
-
-
-
-// const rows = [
-//     createData('Cupcake', 305, 3.7, 67, 2, 2, 2,'poster-im'),
-//     createData('Donut', 452, 25.0, 51,  2, 2, 2, ''),
-// ];
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -323,10 +284,6 @@ function Row(props) {
     };
 
     // console.log(namespace, row.namespace)
-
-
-
-
     return <>
                 <TableRow
                     hover
@@ -473,12 +430,11 @@ export default function InstancesetDetailsTable(props) {
     React.useEffect(()=>{
         const callInstancesets = async () => {
             try{
-                const response = await axios.get(`http://localhost:8080/instanceset/${namespace}`)
+                const response = await axios.get(`http://localhost:8080/customresource/instanceset/${namespace}`)
                 if(response.data){
                     setRows(response.data.map((e)=> {
                         return createData(e)
                     }))
-                    console.log(rows)
                 }
             }
             catch (e){
@@ -516,12 +472,11 @@ export default function InstancesetDetailsTable(props) {
                                 .map((row, index) => {
                                     const isItemSelected = isSelected(row.name);
                                     const labelId = `enhanced-table-checkbox-${index}`;
-                                    console.log(row.namespace, namespace)
-                                    return ( row.namespace === namespace ?
+                                    return (
                                         <Row row={row} isItemSelected={isItemSelected} labelId={labelId}
                                              namespace={namespace}
                                             selected={selected} setSelected={setSelected}
-                                        /> : <></>
+                                        />
                                     );
                                 })}
                             {emptyRows > 0 && (

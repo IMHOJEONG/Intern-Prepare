@@ -1,20 +1,13 @@
-import Paper from "@material-ui/core/Paper";
 import {makeStyles} from "@material-ui/core/styles";
 import React, { useState, useEffect} from "react";
 import Container from "@material-ui/core/Container";
 import {Typography} from "@material-ui/core";
-import Divider from "@material-ui/core/Divider";
 import {ArgumentAxis, BarSeries, Chart, LineSeries, ValueAxis} from "@devexpress/dx-react-chart-material-ui";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import styled from "styled-components";
-import ResourceTable from "../components/ResourceTable";
-import BackupTable from "../components/BackupTable";
-import HaconfigTable from "../components/HaconfigTable";
-import InstanceTable from "../components/InstanceTable";
-import InstancesetTable from "../components/InstancesetTable";
-import axios from 'axios';
 
+import axios from 'axios';
 
 const customresources = {
     "TotalInstanceset": "InstanceSet",
