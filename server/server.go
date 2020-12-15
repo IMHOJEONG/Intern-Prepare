@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
 	mysqlclient "github.kakaocorp.com/cloud/kube-mysql/pkg/generated/clientset/versioned"
 	mysqlv1 "github.kakaocorp.com/cloud/kube-mysql/pkg/mysql/v1"
 	"k8s.io/client-go/kubernetes"
-	"math"
 	"strconv"
 	"time"
 
@@ -35,177 +33,56 @@ type totalData struct {
 	RunningBackup int
 }
 
-type InstanceSets struct {
-	InstanceSets []InstanceSet
-}
+func instanceCall(mysqlClientset *mysqlclient.Clientset, namespace string) []mysqlv1.Instance{
 
-type InstanceSet struct {
-	Namespace string
-	Name string
-	Replicas int
-	Recent_Backup string
-	Age string
-}
-
-type Instances struct {
-	Instances []Instance
-}
-
-type Instance struct {
-	Namespace string
-	Name string
-	Enabled bool
-	Age string
-}
-
-type Haconfigs struct {
-	Haconfigs []Haconfig
-}
-
-type Haconfig struct {
-	Namespace string
-	Name string
-	Enabled bool
-	Primary string
-	Primary_Phase string
-}
-
-type Backups struct {
-	Backups []Backup
-}
-
-type Backup struct {
-	Namespace string
-	Name string
-	Phase string
-	Age string
-}
-
-
-func getNamespace() {
-
-}
-
-
-func instanceCall(mysqlClientset *mysqlclient.Clientset) Instances{
-
-	instancesLists, _ := mysqlClientset.MySQLV1().Instances(metav1.NamespaceAll).List(metav1.ListOptions{})
-
-	instancesResult := Instances{}
-
-	for _, instanceObj := range instancesLists.Items {
-		instanceResult := Instance{}
-		instanceResult.Namespace = instanceObj.Namespace
-		instanceResult.Name = instanceObj.Name
-		instanceResult.Enabled = instanceObj.Spec.Enabled
-
-		createTime := instanceObj.CreationTimestamp
-
-		getDay := math.Floor(time.Now().Sub(createTime.Time).Hours() / 24.0)
-
-		if getDay == 0 {
-			instanceResult.Age = time.Now().Sub(createTime.Time).Round(time.Second).String()
-			//fmt.Println(instancesetResult.Age)
-		} else {
-			instanceResult.Age = fmt.Sprintf("%.0f", getDay) + "d"
-			//fmt.Println(instancesetResult.Age)
-		}
-
-		instancesResult.Instances = append(instancesResult.Instances, instanceResult)
+	var instancesLists *mysqlv1.InstanceList
+	if namespace == "/" {
+		instancesLists, _ = mysqlClientset.MySQLV1().Instances(metav1.NamespaceAll).List(metav1.ListOptions{})
+	} else {
+		instancesLists, _ = mysqlClientset.MySQLV1().Instances(namespace).List(metav1.ListOptions{})
 	}
 
-	return instancesResult
+	return instancesLists.Items
 
 }
 
+func instancesetCall(mysqlClientset *mysqlclient.Clientset, namespace string) []mysqlv1.InstanceSet {
 
-
-func instancesetCall(mysqlClientset *mysqlclient.Clientset) []mysqlv1.InstanceSet {
-
-	instancesetLists, _ := mysqlClientset.MySQLV1().InstanceSets(metav1.NamespaceAll).List(metav1.ListOptions{})
+	var instancesetLists *mysqlv1.InstanceSetList
+	if namespace == "/" {
+		instancesetLists, _ = mysqlClientset.MySQLV1().InstanceSets(metav1.NamespaceAll).List(metav1.ListOptions{})
+	} else {
+		instancesetLists, _ = mysqlClientset.MySQLV1().InstanceSets(namespace).List(metav1.ListOptions{})
+	}
 
 	return instancesetLists.Items
 
-
-
-	//instanceSetsResult := InstanceSets{}
-	//
-	//for _, instancesetObj := range instancesetLists.Items {
-	//	instancesetResult := InstanceSet{}
-	//	instancesetResult.Namespace = instancesetObj.Namespace
-	//	instancesetResult.Name = instancesetObj.Name
-	//	instancesetResult.Replicas = instancesetObj.Spec.Replicas
-	//	if instancesetObj.Spec.Template.Spec.BackupName == nil {
-	//		instancesetResult.Recent_Backup = "No Value"
-	//	} else {
-	//		instancesetResult.Recent_Backup = *(instancesetObj.Spec.Template.Spec.BackupName)
-	//	}
-	//
-	//	createTime := instancesetObj.CreationTimestamp
-	//
-	//	getDay := math.Floor(time.Now().Sub(createTime.Time).Hours() / 24.0)
-	//
-	//	if getDay == 0 {
-	//		instancesetResult.Age = time.Now().Sub(createTime.Time).Round(time.Second).String()
-	//		//fmt.Println(instancesetResult.Age)
-	//	} else {
-	//		instancesetResult.Age = fmt.Sprintf("%.0f", getDay) + "d"
-	//		//fmt.Println(instancesetResult.Age)
-	//	}
-	//	instanceSetsResult.InstanceSets = append(instanceSetsResult.InstanceSets, instancesetResult)
-	//}
-
-	//return instanceSetsResult
 }
 
-func haconfigcall(mysqlClientset *mysqlclient.Clientset) Haconfigs{
+func haconfigcall(mysqlClientset *mysqlclient.Clientset, namespace string) []mysqlv1.HAConfig{
 
-	haconfigLists, _ := mysqlClientset.MySQLV1().HAConfigs(metav1.NamespaceAll).List(metav1.ListOptions{})
-
-	haconfigsResult := Haconfigs{}
-
-	for _, haconfigObj := range haconfigLists.Items {
-		haconfigResult := Haconfig{}
-		haconfigResult.Namespace = haconfigObj.Namespace
-		haconfigResult.Name = haconfigObj.Name
-		haconfigResult.Enabled = haconfigObj.Spec.Enabled
-		haconfigResult.Primary = haconfigObj.Spec.Topology.Name
-		haconfigResult.Primary_Phase = string(haconfigObj.Spec.Topology.Phase)
-		haconfigsResult.Haconfigs = append(haconfigsResult.Haconfigs, haconfigResult)
+	var haconfigLists *mysqlv1.HAConfigList
+	if namespace == "/" {
+		haconfigLists, _ = mysqlClientset.MySQLV1().HAConfigs(metav1.NamespaceAll).List(metav1.ListOptions{})
+	} else {
+		haconfigLists, _ = mysqlClientset.MySQLV1().HAConfigs(namespace).List(metav1.ListOptions{})
 	}
 
-	return haconfigsResult
+	return haconfigLists.Items
+
 }
 
-func backupcall(mysqlClientset *mysqlclient.Clientset) Backups{
+func backupcall(mysqlClientset *mysqlclient.Clientset, namespace string ) []mysqlv1.Backup{
 
-	backupLists, _ := mysqlClientset.MySQLV1().Backups(metav1.NamespaceAll).List(metav1.ListOptions{})
-
-	backupsResult := Backups{}
-
-	for _, backupObj := range backupLists.Items {
-		backupResult := Backup{}
-		backupResult.Namespace = backupObj.Namespace
-		backupResult.Name = backupObj.Name
-		backupResult.Phase = string(backupObj.Status.Phase)
-
-		createTime := backupObj.CreationTimestamp
-
-		getDay := math.Floor(time.Now().Sub(createTime.Time).Hours() / 24.0)
-
-		if getDay == 0 {
-			backupResult.Age = time.Now().Sub(createTime.Time).Round(time.Second).String()
-			//fmt.Println(instancesetResult.Age)
-		} else {
-			backupResult.Age = fmt.Sprintf("%.0f", getDay) + "d"
-			//fmt.Println(instancesetResult.Age)
-		}
-		backupsResult.Backups = append(backupsResult.Backups, backupResult)
+	var backupLists *mysqlv1.BackupList
+	if namespace == "/" {
+		backupLists, _ = mysqlClientset.MySQLV1().Backups(metav1.NamespaceAll).List(metav1.ListOptions{})
+	} else {
+		backupLists, _ = mysqlClientset.MySQLV1().Backups(namespace).List(metav1.ListOptions{})
 	}
 
-	return backupsResult
+	return backupLists.Items
 }
-
 
 func totaldatacall(mysqlClientset *mysqlclient.Clientset, kubeClientset *kubernetes.Clientset) totalData{
 
@@ -241,8 +118,7 @@ func totaldatacall(mysqlClientset *mysqlclient.Clientset, kubeClientset *kuberne
 		if num.Status.Phase != "Bound" {
 			abnormalPV++
 		}
-		//fmt.Println(quantity.AsDec())
-		//fmt.Println(quantity.Value() / 1000000000)
+
 		sumPV += quantity.Value() / 1000000000
 	}
 
@@ -250,9 +126,8 @@ func totaldatacall(mysqlClientset *mysqlclient.Clientset, kubeClientset *kuberne
 	totalData.AbnormalLocalPV = abnormalPV
 
 	abnormalBackup := 0
-	//totalBackup := 0
 	runningBackup := 0
-	//
+
 	for _, back := range totalbackup.Items {
 		if back.Status.Phase == "Succeeded" {
 
@@ -261,11 +136,9 @@ func totaldatacall(mysqlClientset *mysqlclient.Clientset, kubeClientset *kuberne
 		} else {
 			abnormalBackup++
 		}
-		//totalBackup++
+
 	}
 
-	//fmt.Println(totalBackup, runningBackup, abnormalBackup)
-	//totalData.totalBackup = totalBackup
 	totalData.RunningBackup = runningBackup
 	totalData.AbnormalBackup = abnormalBackup
 
@@ -289,7 +162,6 @@ func main() {
 		panic(err.Error())
 	}
 
-	// create the clientset
 	kubeClientset, err := kubernetes.NewForConfig(config)
 
     if err != nil {
@@ -298,85 +170,51 @@ func main() {
 
 	mysqlClientset := mysqlclient.NewForConfigOrDie(config)
 
-
-	//totaldataInstanceset, _ := mysqlClientset.MySQLV1().InstanceSets(metav1.NamespaceAll).Watch(metav1.ListOptions{})
-	//
-	//totaldataInstance, _ := mysqlClientset.MySQLV1().Instances(metav1.NamespaceAll).Watch(metav1.ListOptions{})
-	//
-	//totalbackup, _ := mysqlClientset.MySQLV1().Backups(metav1.NamespaceAll).Watch(metav1.ListOptions{})
-	//
-	//totaldataInstanceset
-
-	//instancesetListsJSON, _ := json.MarshalIndent(instancesetLists, "", " ")
-
-	//fmt.Println(string(instancesetListsJSON))
-
-	//pvsJSON, _ := json.MarshalIndent(pvs, "", " ")
-
-	//fmt.Println(string(pvsJSON))
-
-	//runner.NewKubeSharedInformerFactory()
-	//runner.NewMysqlSharedInformerFactory().
-	//listwatch := cache.NewListWatchFromClient()
-
-	//instances, err := mysqlClientset.MySQLV1().Instances(poster_namespace).Get("instanceset-0", metav1.GetOptions{})
-
-	//fmt.Println(instances.Spec)
-
-	//for()
-
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:3000"},
 		AllowMethods: []string{"PUT", "PATCH", "GET", "POST", "OPTIONS"},
 		AllowHeaders: []string{"Origin"},
 		ExposeHeaders: []string{"Content-Length"},
+		AllowAllOrigins: true,
 		AllowCredentials: true,
-		AllowOriginFunc: func(origin string) bool {
-			return origin == "http://localhost"
-		},
+		AllowWildcard: true,
+
 		MaxAge: 12 * time.Hour,
 	}))
 
-	r.GET("/ping", func(c *gin.Context) {
+	customeresouce := r.Group("/customresource")
+	{
+		customeresouce.GET("/instanceset/*namespace", func(c *gin.Context) {
 
-
-		c.JSON(200, gin.H{
-			"message" : "pong",
+			namespace := c.Params.ByName("namespace")
+			c.JSON(200, instancesetCall(mysqlClientset, namespace))
 		})
-	})
+
+		customeresouce.GET("/instance/*namespace", func(c *gin.Context) {
+
+			namespace := c.Params.ByName("namespace")
+			c.JSON(200, instanceCall(mysqlClientset, namespace))
+		})
+
+		customeresouce.GET("/haconfig/*namespace", func(c *gin.Context) {
+			namespace := c.Params.ByName("namespace")
+			c.JSON(200, haconfigcall(mysqlClientset, namespace))
+		})
+
+		customeresouce.GET("/backup/*namespace", func(c *gin.Context) {
+			namespace := c.Params.ByName("namespace")
+			c.JSON(200, backupcall(mysqlClientset, namespace))
+		})
+
+	}
 
 	r.GET("/all", func(c *gin.Context){
-		//instancesetList, _ := mysqlClientset.MySQLV1().InstanceSets(metav1.NamespaceAll).List(metav1.ListOptions{})
-		//c.JSON(200, instancesetCall(mysqlClientset))
-		//fmt.Println(totaldatacall(mysqlClientset, kubeClientset))
+
 		c.JSON(200, totaldatacall(mysqlClientset, kubeClientset))
-		//instancesList, _ := mysqlClientset.MySQLV1().Instances(metav1.NamespaceAll).List(metav1.ListOptions{})
-		//haconfig, _ := mysqlClientset.MySQLV1().Backups(metav1.NamespaceAll).List(metav1.ListOptions{})
-		//backup, _ := mysqlClientset.MySQLV1().Backups(metav1.NamespaceAll).List(metav1.ListOptions{})
-		//kubeClientset.CoreV1().PersistentVolumes().List(metav1.ListOptions{})
-	})
-
-	r.GET("/instanceset/:namespace", func(c *gin.Context) {
-
-		fmt.Println(c.Params.ByName("namespace"))
-		//mysqlClientset.MySQLV1().RESTClient().
-		c.JSON(200, instancesetCall(mysqlClientset))
 
 	})
 
-	r.GET("/instance", func(c *gin.Context) {
-		c.JSON(200, instanceCall(mysqlClientset))
-	})
-
-	r.GET("/haconfig", func(c *gin.Context) {
-		c.JSON(200, haconfigcall(mysqlClientset))
-	})
-
-	r.GET("/backup", func(c *gin.Context) {
-		c.JSON(200, backupcall(mysqlClientset))
-	})
 
 	r.GET("/namespace", func(c *gin.Context){
 
