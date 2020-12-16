@@ -165,3 +165,60 @@ k delete -f test.yaml -n poster-im -v=8
  - 과연 어떤 방법이 API 호출을 최소화할 수 있을까?
 
  - 더 나은 방법은?
+
+ - Grafana ui를 사용해서 react에서 구현해 볼까?
+    - https://developers.grafana.com/ui/latest/index.html?path=/story/docs-overview-intro--page
+    - https://grafana.com/docs/grafana/latest/packages_api/ui/
+    
+--- 
+
+## GoLang Gin Framework 설정 
+
+- 왜 Gin Framework인가? 
+    - 웹 서버를 올리기 위한 현재 남은 시점에서 가장 큰 star 수를 보유한 framework
+    
+
+
+--- 
+
+## 객체 수정 전 반환 코드 
+
+- API 쪽에서 보여줄 값을 계산한 뒤 View에 쏴주기만 하면 된다고 생각 
+- 그러면 나중에 수정 사항이 생길 경우, 서버 단도 바꾸어 주어야 하는 경우가 생김 
+
+```golang
+
+	instanceSetsResult := InstanceSets{}
+	
+	for _, instancesetObj := range instancesetLists.Items {
+		instancesetResult := InstanceSet{}
+		instancesetResult.Namespace = instancesetObj.Namespace
+		instancesetResult.Name = instancesetObj.Name
+		instancesetResult.Replicas = instancesetObj.Spec.Replicas
+		if instancesetObj.Spec.Template.Spec.BackupName == nil {
+			instancesetResult.Recent_Backup = "No Value"
+		} else {
+			instancesetResult.Recent_Backup = *(instancesetObj.Spec.Template.Spec.BackupName)
+		}
+	
+		createTime := instancesetObj.CreationTimestamp
+	
+		getDay := math.Floor(time.Now().Sub(createTime.Time).Hours() / 24.0)
+	
+		if getDay == 0 {
+			instancesetResult.Age = time.Now().Sub(createTime.Time).Round(time.Second).String()
+			//fmt.Println(instancesetResult.Age)
+		} else {
+			instancesetResult.Age = fmt.Sprintf("%.0f", getDay) + "d"
+			//fmt.Println(instancesetResult.Age)
+		}
+		instanceSetsResult.InstanceSets = append(instanceSetsResult.InstanceSets, instancesetResult)
+	}
+
+	return instanceSetsResult
+
+```
+
+# WebPack 
+
+- https://www.pluralsight.com/guides/how-to-load-svg-with-react-and-webpack
