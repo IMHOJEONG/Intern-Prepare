@@ -1,4 +1,4 @@
 {
-  "./distapp.js": ".bundle.js",
-  "./distnode_modules_web-vitals_dist_web-vitals_es5_min_js.bundle.js": ".node_modules_web-vitals_dist_web-vitals_es5_min_js.bundle.js"
+  "/distapp.js": ".bundle.js",
+  "/distnode_modules_web-vitals_dist_web-vitals_es5_min_js.bundle.js": ".node_modules_web-vitals_dist_web-vitals_es5_min_js.bundle.js"
 }

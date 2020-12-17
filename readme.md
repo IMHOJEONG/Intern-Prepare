@@ -10,7 +10,7 @@
 - [Features](#feature) 
 - [Install](#install)
 - [Structure](#Structure)
-- [References] (#Reference)
+- [References](#Reference)
 
 ## Feature
 
@@ -48,7 +48,21 @@ npm start
 
 ## Structure 
 
+- [Wiki Link](https://wiki.daumkakao.com/pages/viewpage.action?spaceKey=kepcloud&title=Architecture)
 
+<p align="center">
+    <img src="./Network_Structure.png" alt="Kube-Mysql-Console" width="298">    
+</p>
 
 ## Reference 
+
+**Cypress** - E2E Test
+
+```
+npm run test:cypress
+```
+
+- click integration/App.e2e.js 
+
+**StudyFile** - [Files Link](./studyfile/1_StudyFile.md)
 

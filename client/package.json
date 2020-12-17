@@ -25,7 +25,7 @@
     "start": "./node_modules/.bin/webpack --mode development",
     "build": "./node_modules/.bin/webpack",
     "start:test" : "react-scripts start",
-    "test:cypress": "./node_modules/cypress open",
+    "test:cypress": "./node_modules/.bin/cypress open",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
