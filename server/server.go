@@ -13,6 +13,7 @@ import (
 	//"net/http/httputil"
 	//"net/url"
 
+	"fmt"
 	"flag"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -39,6 +40,7 @@ func instanceCall(mysqlClientset *mysqlclient.Clientset, namespace string) []mys
 	if namespace == "/" {
 		instancesLists, _ = mysqlClientset.MySQLV1().Instances(metav1.NamespaceAll).List(metav1.ListOptions{})
 	} else {
+		namespace = namespace[1:]
 		instancesLists, _ = mysqlClientset.MySQLV1().Instances(namespace).List(metav1.ListOptions{})
 	}
 
@@ -52,7 +54,9 @@ func instancesetCall(mysqlClientset *mysqlclient.Clientset, namespace string) []
 	if namespace == "/" {
 		instancesetLists, _ = mysqlClientset.MySQLV1().InstanceSets(metav1.NamespaceAll).List(metav1.ListOptions{})
 	} else {
+		namespace = namespace[1:]
 		instancesetLists, _ = mysqlClientset.MySQLV1().InstanceSets(namespace).List(metav1.ListOptions{})
+		fmt.Println(instancesetLists)
 	}
 
 	return instancesetLists.Items
@@ -65,6 +69,7 @@ func haconfigcall(mysqlClientset *mysqlclient.Clientset, namespace string) []mys
 	if namespace == "/" {
 		haconfigLists, _ = mysqlClientset.MySQLV1().HAConfigs(metav1.NamespaceAll).List(metav1.ListOptions{})
 	} else {
+		namespace = namespace[1:]
 		haconfigLists, _ = mysqlClientset.MySQLV1().HAConfigs(namespace).List(metav1.ListOptions{})
 	}
 
@@ -78,6 +83,7 @@ func backupcall(mysqlClientset *mysqlclient.Clientset, namespace string ) []mysq
 	if namespace == "/" {
 		backupLists, _ = mysqlClientset.MySQLV1().Backups(metav1.NamespaceAll).List(metav1.ListOptions{})
 	} else {
+		namespace = namespace[1:]
 		backupLists, _ = mysqlClientset.MySQLV1().Backups(namespace).List(metav1.ListOptions{})
 	}
 
