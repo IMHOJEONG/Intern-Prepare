@@ -43,7 +43,17 @@ cd client
 
 npm install 
 
-npm start 
+npm run start:test 
+
+```
+
+**webpack bundle file execute**
+
+```
+cd dist 
+
+In intellij => index.html => open in Browser => chrome 
+
 ```
 
 ## Structure 
